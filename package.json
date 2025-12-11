@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "build:action": "tsc && npm run package",
-    "package": "echo 'Action built successfully'",
+    "build:action": "ncc build src/action-entrypoint.ts -o dist --source-map --license licenses.txt",
+    "package": "npm run build:action",
     "dev": "tsx watch src/main.ts",
     "start": "node dist/main.js",
     "update-contribution": "tsx src/main.ts --service=contribution",
@@ -36,6 +36,7 @@
     "@types/node": "^25.0.0",
     "@typescript-eslint/eslint-plugin": "^8.49.0",
     "@typescript-eslint/parser": "^8.49.0",
+    "@vercel/ncc": "^0.38.4",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
