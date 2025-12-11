@@ -6,8 +6,13 @@ import {
   getDefaultContributionBadgeOptions,
 } from './presentation/templates/contribution-badge.js';
 import {
+  renderStatsCard,
+  getDefaultStatsCardOptions,
+} from './presentation/templates/stats-card.js';
+import {
   fetchContributionCalendar,
   calculateActiveDays,
+  fetchGitHubStats,
   getGitHubUsername,
   getGitHubToken,
 } from './infrastructure/github-api.js';
@@ -36,8 +41,11 @@ async function main() {
     await generateContributionBadge(storage, username);
   }
 
+  if (service === 'stats' || service === 'all') {
+    await generateStatsCard(storage, username);
+  }
+
   // TODO: Add other services here
-  // if (service === 'stats' || service === 'all') { ... }
   // if (service === 'languages' || service === 'all') { ... }
   // if (service === 'streak' || service === 'all') { ... }
 
@@ -84,6 +92,47 @@ async function generateContributionBadge(storage: FileStorage, username?: string
     console.log(`  💾 Badge saved to: data/contribution-badge.svg`);
   } catch (error) {
     console.error('  ❌ Error fetching contribution data:', error);
+    throw error;
+  }
+}
+
+/**
+ * Generates the GitHub Stats Card
+ */
+async function generateStatsCard(storage: FileStorage, username?: string) {
+  console.log('  📊 Fetching GitHub stats...');
+
+  try {
+    // Get GitHub credentials
+    const githubUsername = getGitHubUsername(username);
+    const token = getGitHubToken();
+
+    console.log(`  👤 Using GitHub username: ${githubUsername}`);
+
+    // Fetch GitHub stats
+    const stats = await fetchGitHubStats(githubUsername, token);
+
+    console.log(`  📈 Total Commits: ${stats.totalCommits}`);
+    console.log(`  🔀 Pull Requests: ${stats.totalPRs}`);
+    console.log(`  📋 Issues: ${stats.totalIssues}`);
+    console.log(`  ⭐ Stars: ${stats.totalStars}`);
+    console.log(`  🏆 Rank: ${stats.rank}`);
+
+    // Save data
+    await storage.write('stats-data', stats);
+
+    // Generate SVG
+    const theme = getTheme('dark');
+    const options = getDefaultStatsCardOptions(theme, githubUsername);
+    const svg = renderStatsCard(stats, options);
+
+    // Save SVG to data/
+    const outputPath = join(__dirname, '../data/stats-card.svg');
+    await writeFile(outputPath, svg, 'utf-8');
+
+    console.log(`  💾 Stats card saved to: data/stats-card.svg`);
+  } catch (error) {
+    console.error('  ❌ Error fetching stats:', error);
     throw error;
   }
 }

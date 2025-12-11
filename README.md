@@ -10,7 +10,7 @@
 ## ✨ Features
 
 - 📅 **Active Days**: Total contribution days from GitHub (shows consistency)
-- 📊 **GitHub Stats**: Commits, PRs, Issues, Stars (Coming Soon)
+- 📊 **GitHub Stats**: Commits, PRs, Issues, Stars, Contributed Repos & Rank ✅ **Available Now!**
 - 🔥 **Top Languages**: Most used programming languages (Coming Soon)
 - ⚡ **Streak Stats**: Contribution streak tracking (Coming Soon)
 - 🎨 **Lucide Icons**: Beautiful, professional icons from [Lucide](https://lucide.dev) (1000+ icons available)
@@ -171,7 +171,7 @@ The badge updates automatically every night via GitHub Actions!
 npm run dev              # Development mode with watch
 npm run build            # Compile TypeScript
 npm run update-contribution # Generate active days badge
-npm run update-stats     # Generate stats card (coming soon)
+npm run update-stats     # Generate stats card ✅ Available now!
 npm run update-all       # Generate all badges
 
 # Code Quality
@@ -248,6 +248,12 @@ function renderContributionBadge(data: ContributionData): string {
 - [x] Contribution Days badge with gradient & fire icon
 - [x] Professional tooling (ESLint, Prettier, Husky)
 - [x] GitHub API integration for real contribution data
+- [x] **GitHub Stats Card** (Commits, PRs, Issues, Stars, Rank) ✅ **Done!**
+- [ ] Top Languages card with color-coded bars
+- [ ] Streak statistics tracking
+- [ ] Visitor counter badge
+- [ ] Light theme support
+- [ ] Custom icon selection from Lucide library
 - [ ] GitHub Stats Card
 - [ ] Top Languages Card
 - [ ] Streak Stats Card

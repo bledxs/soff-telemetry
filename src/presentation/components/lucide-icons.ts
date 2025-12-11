@@ -12,6 +12,7 @@ import {
   GitBranch,
   GitCommit,
   GitPullRequest,
+  CircleDot,
   Activity,
   TrendingUp,
   Award,
@@ -40,6 +41,7 @@ const iconMap = {
   GitBranch,
   GitCommit,
   GitPullRequest,
+  CircleDot,
   Activity,
   TrendingUp,
   Award,
@@ -81,23 +83,43 @@ export function createLucideIcon(
   // Lucide icons are 24x24 by default, so we scale them
   const scale = size / 24;
 
-  // Extract path data from SVG string
-  const pathMatches = iconSvg.matchAll(/<path\s+d="([^"]+)"/g);
-  const paths: string[] = [];
+  // Extract all SVG elements (path, circle, line, polyline, polygon, rect, ellipse)
+  const svgContent = iconSvg
+    .replace(/<svg[^>]*>/, '') // Remove opening svg tag
+    .replace(/<\/svg>/, '') // Remove closing svg tag
+    .trim();
 
-  for (const match of pathMatches) {
-    if (match[1]) {
-      paths.push(match[1]);
-    }
-  }
-
-  if (paths.length === 0) {
-    console.warn(`No paths found in icon "${name}"`);
+  if (!svgContent) {
+    console.warn(`No SVG content found in icon "${name}"`);
     return '';
   }
 
+  // Apply stroke color and attributes to all elements
+  let coloredContent = svgContent
+    .replace(/stroke="currentColor"/g, `stroke="${color}"`)
+    .replace(/fill="currentColor"/g, `fill="${color}"`);
+
+  // Ensure all shape elements are properly self-closing and have stroke attributes
+  coloredContent = coloredContent.replace(
+    /<(circle|line|path|polyline|polygon|rect|ellipse)([^>]*?)(\s*\/?>)/g,
+    (_match: string, tag: string, attrs: string, _closing: string): string => {
+      // Normalize attributes - trim whitespace
+      const normalizedAttrs: string = attrs.trim();
+
+      // Check if it already has a stroke attribute
+      const hasStroke: boolean = normalizedAttrs.includes('stroke=');
+
+      // Build the element with proper self-closing format
+      if (hasStroke) {
+        return `<${tag} ${normalizedAttrs} />`;
+      } else {
+        return `<${tag} ${normalizedAttrs} stroke="${color}" />`;
+      }
+    },
+  );
+
   return `  <g transform="translate(${point.x}, ${point.y}) scale(${scale})">
-    ${paths.map((path) => `<path d="${path}" stroke="${color}" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`).join('\n    ')}
+    ${coloredContent}
   </g>`;
 }
 
@@ -123,4 +145,9 @@ export const IconPresets = {
   award: 'Award' as IconName,
   code: 'Code' as IconName,
   zap: 'Zap' as IconName,
+  'git-commit': 'GitCommit' as IconName,
+  'git-pull-request': 'GitPullRequest' as IconName,
+  'circle-dot': 'CircleDot' as IconName,
+  star: 'Star' as IconName,
+  'git-branch': 'GitBranch' as IconName,
 };
