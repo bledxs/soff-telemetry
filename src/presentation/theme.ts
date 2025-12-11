@@ -44,6 +44,7 @@ export const themes = {
   light: lightTheme,
 };
 
-export function getTheme(themeName: keyof typeof themes = 'default'): Theme {
-  return themes[themeName] || defaultTheme;
+export function getTheme(themeName: string = 'default'): Theme {
+  const validTheme = themeName as keyof typeof themes;
+  return themes[validTheme] || defaultTheme;
 }

@@ -6,6 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "build:action": "tsc && npm run package",
+    "package": "echo 'Action built successfully'",
     "dev": "tsx watch src/main.ts",
     "start": "node dist/main.js",
     "update-contribution": "tsx src/main.ts --service=contribution",
@@ -20,10 +22,13 @@
   },
   "keywords": [
     "github",
+    "github-actions",
     "stats",
     "badge",
     "visitor-counter",
-    "svg"
+    "svg",
+    "contribution-graph",
+    "profile-readme"
   ],
   "author": "soff",
   "license": "MIT",
@@ -42,7 +47,11 @@
     "typescript-eslint": "^8.49.0"
   },
   "dependencies": {
-    "@octokit/graphql": "^9.0.3"
+    "@actions/core": "^2.0.1",
+    "@actions/github": "^6.0.1",
+    "@octokit/graphql": "^9.0.3",
+    "dotenv": "^17.2.3",
+    "lucide-static": "^0.560.0"
   },
   "lint-staged": {
     "*.ts": [

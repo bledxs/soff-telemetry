@@ -1,0 +1,43 @@
+name: 'Soff Telemetry'
+description: 'Generate GitHub profile stats, contribution badges, and visitor counters for your profile'
+author: 'bledxs'
+
+branding:
+  icon: 'activity'
+  color: 'blue'
+
+inputs:
+  github_token:
+    description: 'GitHub token with read:user permissions'
+    required: true
+
+  username:
+    description: 'GitHub username (defaults to repository owner)'
+    required: false
+    default: ''
+
+  theme:
+    description: 'Badge theme: dark, light, radical, merko, gruvbox, tokyonight, onedark, cobalt, synthwave, highcontrast, dracula'
+    required: false
+    default: 'dark'
+
+  output_dir:
+    description: 'Output directory for generated badges'
+    required: false
+    default: './data'
+
+  service:
+    description: 'Service to generate: contribution, stats, all'
+    required: false
+    default: 'contribution'
+
+outputs:
+  badge_path:
+    description: 'Path to the generated badge file'
+
+  total_days:
+    description: 'Total active contribution days'
+
+runs:
+  using: 'node20'
+  main: 'dist/action-entrypoint.js'

@@ -39,6 +39,5 @@ coverage/
 *.tmp
 .cache/
 
-# Documentation (keep only README)
-STATUS.md
-USAGE.md
+# Keep important documentation
+!USAGE.md

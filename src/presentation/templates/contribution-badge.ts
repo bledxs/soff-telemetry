@@ -4,9 +4,9 @@ import {
   createRect,
   createText,
   formatNumber,
-  createIcon,
   createLinearGradient,
 } from '../components/svg-utils.js';
+import { createLucideIcon, IconPresets } from '../components/lucide-icons.js';
 
 /**
  * Generates the Contribution Days Badge SVG
@@ -46,9 +46,14 @@ export function renderContributionBadge(
   // Counter background with gradient
   const countRect = `  <rect x="${labelWidth}" y="0" width="${countWidth}" height="${height}" rx="5" fill="url(#countGradient)" filter="url(#shadow)"/>`;
 
-  // Calendar icon if enabled (changed from eye to calendar for active days)
-  const calendarIcon = icon
-    ? createIcon({ x: padding, y: height / 2 - iconSize / 2 }, iconSize, theme.textColor, 'fire')
+  // Flame icon if enabled (represents active contribution days)
+  const flameIcon = icon
+    ? createLucideIcon(
+        IconPresets.contribution,
+        { x: padding, y: height / 2 - iconSize / 2 },
+        iconSize,
+        theme.textColor,
+      )
     : '';
 
   // Label text
@@ -84,7 +89,7 @@ ${shadow}
 ${labelRect}
 ${countRect}
 ${shine}
-${calendarIcon}
+${flameIcon}
 ${labelText}
 ${countValueText}`;
 

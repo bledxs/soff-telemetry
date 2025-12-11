@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { FileStorage } from './infrastructure/kv-store.js';
 import { getTheme } from './presentation/theme.js';
 import {
@@ -24,6 +25,7 @@ const __dirname = dirname(__filename);
 async function main() {
   const args = process.argv.slice(2);
   const service = args.find((arg) => arg.startsWith('--service='))?.split('=')[1] || 'contribution';
+  const username = args.find((arg) => arg.startsWith('--username='))?.split('=')[1];
 
   console.log(`🚀 Generating ${service} badge/stats...`);
 
@@ -31,7 +33,7 @@ async function main() {
   const storage = new FileStorage();
 
   if (service === 'contribution' || service === 'all') {
-    await generateContributionBadge(storage);
+    await generateContributionBadge(storage, username);
   }
 
   // TODO: Add other services here
@@ -45,16 +47,18 @@ async function main() {
 /**
  * Generates the Contribution Days Badge
  */
-async function generateContributionBadge(storage: FileStorage) {
+async function generateContributionBadge(storage: FileStorage, username?: string) {
   console.log('  📊 Fetching contribution data from GitHub...');
 
   try {
     // Get GitHub credentials
-    const username = getGitHubUsername();
+    const githubUsername = getGitHubUsername(username);
     const token = getGitHubToken();
 
+    console.log(`  👤 Using GitHub username: ${githubUsername}`);
+
     // Fetch contribution calendar
-    const calendar = await fetchContributionCalendar(username, token);
+    const calendar = await fetchContributionCalendar(githubUsername, token);
     const totalDays = calculateActiveDays(calendar);
 
     console.log(`  📅 Active contribution days: ${totalDays}`);

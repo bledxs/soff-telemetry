@@ -1,25 +1,29 @@
 # 🎯 SOFF Telemetry
 
-> Self-hosted GitHub profile stats, streak, and visitor badges built with TypeScript
+> Self-hosted GitHub profile stats, streak, and visitor badges — Use as a reusable GitHub Action or self-host
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
 [![Code Style: Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io/)
+[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Soff%20Telemetry-blue?logo=github)](https://github.com/marketplace/actions/soff-telemetry)
 
 ## ✨ Features
 
-- � **Active Days**: Total contribution days from GitHub (shows consistency)
+- 📅 **Active Days**: Total contribution days from GitHub (shows consistency)
 - 📊 **GitHub Stats**: Commits, PRs, Issues, Stars (Coming Soon)
 - 🔥 **Top Languages**: Most used programming languages (Coming Soon)
 - ⚡ **Streak Stats**: Contribution streak tracking (Coming Soon)
+- 🎨 **Lucide Icons**: Beautiful, professional icons from [Lucide](https://lucide.dev) (1000+ icons available)
 
-**Why self-hosted?**
+**Why use SOFF Telemetry?**
 
-- ✅ No rate limits
-- ✅ Full control over design and data
-- ✅ Repository acts as free database
-- ✅ Automated updates via GitHub Actions
-- ✅ Real data from GitHub API (not fake counters)
+- ✅ **No fork required** - Use as a GitHub Action directly
+- ✅ **No rate limits** - Self-hosted data
+- ✅ **Full control** - Customize design and themes
+- ✅ **Lucide icons** - Professional, consistent icon library
+- ✅ **Free database** - Repository acts as storage
+- ✅ **Automated updates** - GitHub Actions cron jobs
+- ✅ **Real data** - Powered by GitHub API (not fake counters)
 
 ## 📦 Architecture
 
@@ -47,7 +51,75 @@ soff-telemetry/
 
 ## 🚀 Quick Start
 
-### 1. Fork & Clone
+### Option 1: Use as a GitHub Action (Recommended)
+
+The easiest way to use SOFF Telemetry is as a reusable GitHub Action. No fork required!
+
+#### Step 1: Create a workflow file
+
+Create `.github/workflows/update-badges.yml` in your profile repository:
+
+```yaml
+name: Update Telemetry Badges
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Daily at midnight
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  update-badges:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate Soff Telemetry
+        uses: bledxs/soff-telemetry@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          theme: 'dark'
+          output_dir: './assets'
+          service: 'contribution'
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add -A
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🤖 Update badges" && git push)
+```
+
+#### Step 2: Use the badge in your README
+
+```markdown
+![Active Days](https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_USERNAME/main/assets/contribution-badge.svg)
+```
+
+#### Available Inputs
+
+| Input          | Description                                    | Required | Default          |
+| -------------- | ---------------------------------------------- | -------- | ---------------- |
+| `github_token` | GitHub token with read:user permissions        | Yes      | -                |
+| `username`     | GitHub username (defaults to repo owner)       | No       | Repository owner |
+| `theme`        | Badge theme (dark, light)                      | No       | `dark`           |
+| `output_dir`   | Output directory for badges                    | No       | `./data`         |
+| `service`      | Service to generate (contribution, stats, all) | No       | `contribution`   |
+
+#### Available Outputs
+
+| Output       | Description                      |
+| ------------ | -------------------------------- |
+| `badge_path` | Path to the generated badge file |
+| `total_days` | Total active contribution days   |
+
+### Option 2: Fork & Self-Host
+
+If you want to customize the code or add your own features:
+
+#### 1. Fork & Clone
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/soff-telemetry.git
@@ -55,11 +127,24 @@ cd soff-telemetry
 npm install
 ```
 
-### 2. Test Locally
+#### 2. Test Locally
 
 ```bash
-# Generate contribution badge
+# 1. Copy the example environment file
+cp .env.example .env
+
+# 2. Edit .env and add your GitHub credentials
+# GITHUB_USERNAME=your-username
+# GITHUB_TOKEN=your-github-token
+
+# 3. Install dependencies
+npm install
+
+# 4. Run the script
 npm run update-contribution
+
+# OR pass username as argument (overrides .env)
+npm run update-contribution -- --username=your-username
 
 # Watch mode for development
 npm run dev
@@ -68,7 +153,9 @@ npm run dev
 npm run build
 ```
 
-### 3. Use in Your Profile
+> **Note**: Get a GitHub token from [Settings → Developer settings → Personal access tokens](https://github.com/settings/tokens). Only `read:user` scope is needed.
+
+#### 3. Use in Your Profile
 
 ```markdown
 ![Active Days](https://raw.githubusercontent.com/YOUR_USERNAME/soff-telemetry/main/data/contribution-badge.svg)
@@ -178,6 +265,11 @@ Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for gu
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+## � Documentation
+
+- **[Usage Examples](USAGE.md)** - Detailed examples and advanced configurations- **[Lucide Icons Guide](docs/LUCIDE_ICONS.md)** - How to use and customize icons- **[Publishing Guide](PUBLISHING.md)** - How to publish to GitHub Marketplace
+- **[Contributing](CONTRIBUTING.md)** - Contribution guidelines
+
 ## 📄 License
 
 MIT License - see [LICENSE](LICENSE) file for details.
@@ -185,16 +277,15 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## 🙏 Acknowledgments
 
 - Inspired by [github-readme-stats](https://github.com/anuraghazra/github-readme-stats)
-- Built with ❤️ and TypeScript
+- Icons powered by [Lucide](https://lucide.dev) - Beautiful & consistent open source icons
+- Built with ❤️ and TypeScript by [@bledxs](https://github.com/bledxs)
 
 ---
 
-**Made with ☕ by [SOFF](https://github.com/YOUR_USERNAME)**
+<div align="center">
 
-## 🎨 Theme
+**⭐ If you find this useful, give it a star!**
 
-Custom blue palette inspired by VTEX/React aesthetics.
+[Report Bug](https://github.com/bledxs/soff-telemetry/issues) · [Request Feature](https://github.com/bledxs/soff-telemetry/issues) · [View Examples](USAGE.md)
 
-## 📝 License
-
-MIT
+</div>
