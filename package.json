@@ -1,0 +1,56 @@
+{
+  "name": "soff-telemetry",
+  "version": "1.0.0",
+  "description": "Auto-hosted GitHub profile stats, streak, and visitor badges",
+  "main": "dist/main.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/main.ts",
+    "start": "node dist/main.js",
+    "update-visitor": "tsx src/main.ts --service=visitor",
+    "update-stats": "tsx src/main.ts --service=stats",
+    "update-all": "tsx src/main.ts --service=all",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier --write \"src/**/*.{ts,js,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,js,json}\"",
+    "typecheck": "tsc --noEmit",
+    "prepare": "husky init"
+  },
+  "keywords": [
+    "github",
+    "stats",
+    "badge",
+    "visitor-counter",
+    "svg"
+  ],
+  "author": "soff",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^25.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.49.0",
+    "@typescript-eslint/parser": "^8.49.0",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.7.4",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.49.0"
+  },
+  "dependencies": {
+    "@octokit/graphql": "^9.0.3"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml}": [
+      "prettier --write"
+    ]
+  }
+}
