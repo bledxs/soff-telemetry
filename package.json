@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "build:action": "ncc build src/action-entrypoint.ts -o dist --source-map --license licenses.txt",
+    "build:action": "ncc build src/action-entrypoint.ts -o dist --license licenses.txt",
     "package": "npm run build:action",
     "dev": "tsx watch src/main.ts",
     "start": "node dist/main.js",

@@ -1,4 +1,4 @@
-import './sourcemap-register.cjs';import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "module";
+import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "module";
 /******/ var __webpack_modules__ = ({
 
 /***/ 4914:
@@ -64866,5 +64866,3 @@ async function generateContributionBadge(storage, username, token, themeName, ou
 // Run the action
 void run();
 
-
-//# sourceMappingURL=index.js.map
