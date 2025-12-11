@@ -63899,6 +63899,108 @@ function getDefaultContributionBadgeOptions(theme) {
     };
 }
 
+;// CONCATENATED MODULE: ./src/presentation/templates/stats-card.ts
+
+
+/**
+ * Generates the GitHub Stats Card SVG
+ * Modern design showing commits, PRs, issues, stars, contributed repos, and rank
+ */
+function renderStatsCard(stats, options) {
+    const { width, theme, username, hideStats = [], showIcons = true } = options;
+    const padding = 20;
+    const titleHeight = 40;
+    const rowHeight = 30;
+    const iconSize = 16;
+    // Determine which stats to show
+    const allStats = [
+        { key: 'totalCommits', label: 'Total Commits', value: stats.totalCommits, icon: 'git-commit' },
+        { key: 'totalPRs', label: 'Pull Requests', value: stats.totalPRs, icon: 'git-pull-request' },
+        { key: 'totalIssues', label: 'Total Issues', value: stats.totalIssues, icon: 'circle-dot' },
+        { key: 'totalStars', label: 'Total Stars', value: stats.totalStars, icon: 'star' },
+        {
+            key: 'contributedTo',
+            label: 'Contributed To',
+            value: stats.contributedTo,
+            icon: 'git-branch',
+        },
+    ];
+    const visibleStats = allStats.filter((stat) => !hideStats.includes(stat.key));
+    // Calculate card height
+    const cardHeight = titleHeight + visibleStats.length * rowHeight + padding * 2 + 20;
+    // Create gradient
+    const gradient = createLinearGradient('statsGradient', [
+        { offset: '0%', color: theme.accentColor },
+        { offset: '100%', color: theme.secondaryColor },
+    ]);
+    // Shadow definition
+    const shadow = `  <defs>
+    <filter id="cardShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.2"/>
+    </filter>
+  </defs>`;
+    // Main card background
+    const cardBg = createRect({ x: 0, y: 0, width, height: cardHeight, rx: 10 }, theme.background);
+    // Title section
+    const titleText = createText(`${username}'s GitHub Stats`, { x: padding, y: padding + 20 }, {
+        fontSize: 18,
+        fontWeight: 'bold',
+        fill: theme.textColor,
+    });
+    // Rank badge (top right)
+    const rankBadgeSize = 60;
+    const rankBadgeX = width - rankBadgeSize - padding;
+    const rankBadgeY = padding;
+    const rankBadge = `  <g>
+    <circle cx="${rankBadgeX + rankBadgeSize / 2}" cy="${rankBadgeY + rankBadgeSize / 2}" r="${rankBadgeSize / 2 - 2}" fill="${theme.accentColor}" opacity="0.2" stroke="${theme.accentColor}" stroke-width="2"/>
+    ${createText(stats.rank, { x: rankBadgeX + rankBadgeSize / 2, y: rankBadgeY + rankBadgeSize / 2 + 7 }, { fontSize: 24, fontWeight: 'bold', fill: theme.accentColor, textAnchor: 'middle' })}
+  </g>`;
+    // Stats rows
+    let statsRows = '';
+    visibleStats.forEach((stat, index) => {
+        const y = titleHeight + padding + index * rowHeight;
+        const iconX = padding + 5;
+        const iconY = y + 5;
+        const labelX = showIcons ? iconX + iconSize + 10 : iconX;
+        const valueX = width - padding;
+        // Icon (Lucide)
+        const iconName = IconPresets[stat.icon];
+        const icon = showIcons && iconName
+            ? createLucideIcon(iconName, { x: iconX, y: iconY }, iconSize, theme.secondaryColor)
+            : '';
+        // Label
+        const label = createText(stat.label, { x: labelX, y: y + 18 }, {
+            fontSize: 14,
+            fill: theme.textColor,
+        });
+        // Value
+        const value = createText(formatNumber(stat.value), { x: valueX, y: y + 18 }, {
+            fontSize: 14,
+            fontWeight: 'bold',
+            fill: theme.accentColor,
+            textAnchor: 'end',
+        });
+        statsRows += `  <g>${icon}${label}${value}</g>\n`;
+    });
+    // Divider line after title
+    const divider = `  <line x1="${padding}" y1="${titleHeight + padding}" x2="${width - padding}" y2="${titleHeight + padding}" stroke="${theme.borderColor}" stroke-width="1" opacity="0.3"/>`;
+    // Assemble SVG
+    return createSVG(width, cardHeight, `${shadow}\n${gradient}\n${cardBg}\n${titleText}\n${rankBadge}\n${divider}\n${statsRows}`);
+}
+/**
+ * Returns default options for the Stats Card
+ */
+function getDefaultStatsCardOptions(theme, username) {
+    return {
+        width: 500,
+        height: 300, // Will be adjusted dynamically
+        theme,
+        username,
+        showIcons: true,
+        hideStats: [],
+    };
+}
+
 ;// CONCATENATED MODULE: ./node_modules/universal-user-agent/index.js
 function getUserAgent() {
   if (typeof navigator === "object" && "userAgent" in navigator) {
@@ -64554,7 +64656,7 @@ var NON_VARIABLE_OPTIONS = [
 ];
 var FORBIDDEN_VARIABLE_OPTIONS = ["query", "method", "url"];
 var GHES_V3_SUFFIX_REGEX = /\/api\/v3\/?$/;
-function dist_bundle_graphql(request2, query, options) {
+function graphql(request2, query, options) {
   if (options) {
     if (typeof query === "string" && "query" in options) {
       return Promise.reject(
@@ -64608,7 +64710,7 @@ function dist_bundle_graphql(request2, query, options) {
 function graphql_dist_bundle_withDefaults(request2, newDefaults) {
   const newRequest = request2.defaults(newDefaults);
   const newApi = (query, options) => {
-    return dist_bundle_graphql(newRequest, query, options);
+    return graphql(newRequest, query, options);
   };
   return Object.assign(newApi, {
     defaults: graphql_dist_bundle_withDefaults.bind(null, newRequest),
@@ -64711,7 +64813,7 @@ function getGitHubToken() {
  * Fetches comprehensive GitHub user stats
  */
 async function fetchGitHubStats(username, token) {
-    const graphqlWithAuth = graphql.defaults({
+    const graphqlWithAuth = graphql2.defaults({
         headers: {
             authorization: `token ${token}`,
         },
@@ -64795,6 +64897,7 @@ var external_fs_ = __nccwpck_require__(9896);
 
 
 
+
 /**
  * Main action runner
  */
@@ -64821,6 +64924,9 @@ async function run() {
             const badgePath = await generateContributionBadge(storage, username, githubToken, theme, outputDir);
             // Set outputs for the action
             core.setOutput('badge_path', badgePath);
+        }
+        if (service === 'stats' || service === 'all') {
+            await generateStatsCard(storage, username, githubToken, theme, outputDir);
         }
         core.info('✅ Done!');
     }
@@ -64861,6 +64967,36 @@ async function generateContributionBadge(storage, username, token, themeName, ou
     const outputPath = (0,external_path_.join)(outputDir, 'contribution-badge.svg');
     await (0,promises_namespaceObject.writeFile)(outputPath, svg, 'utf-8');
     core.info(`💾 Badge saved to: ${outputPath}`);
+    return outputPath;
+}
+/**
+ * Generates the GitHub Stats Card
+ */
+async function generateStatsCard(storage, username, token, themeName, outputDir) {
+    core.info('📊 Fetching GitHub stats...');
+    if (!username) {
+        throw new Error('GitHub username is required');
+    }
+    if (!token) {
+        throw new Error('GitHub token is required');
+    }
+    // Fetch GitHub stats
+    const stats = await fetchGitHubStats(username, token);
+    core.info(`📈 Total Commits: ${stats.totalCommits}`);
+    core.info(`🔀 Pull Requests: ${stats.totalPRs}`);
+    core.info(`📋 Issues: ${stats.totalIssues}`);
+    core.info(`⭐ Stars: ${stats.totalStars}`);
+    core.info(`🏆 Rank: ${stats.rank}`);
+    // Save data
+    await storage.write('stats-data', stats);
+    // Generate SVG
+    const theme = getTheme(themeName);
+    const options = getDefaultStatsCardOptions(theme, username);
+    const svg = renderStatsCard(stats, options);
+    // Save SVG
+    const outputPath = (0,external_path_.join)(outputDir, 'stats-card.svg');
+    await (0,promises_namespaceObject.writeFile)(outputPath, svg, 'utf-8');
+    core.info(`💾 Stats card saved to: ${outputPath}`);
     return outputPath;
 }
 // Run the action

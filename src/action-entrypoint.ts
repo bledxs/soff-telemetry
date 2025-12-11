@@ -11,7 +11,15 @@ import {
   renderContributionBadge,
   getDefaultContributionBadgeOptions,
 } from './presentation/templates/contribution-badge.js';
-import { fetchContributionCalendar, calculateActiveDays } from './infrastructure/github-api.js';
+import {
+  renderStatsCard,
+  getDefaultStatsCardOptions,
+} from './presentation/templates/stats-card.js';
+import {
+  fetchContributionCalendar,
+  calculateActiveDays,
+  fetchGitHubStats,
+} from './infrastructure/github-api.js';
 import { ContributionData } from './domain/types.js';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
@@ -54,6 +62,10 @@ async function run(): Promise<void> {
 
       // Set outputs for the action
       core.setOutput('badge_path', badgePath);
+    }
+
+    if (service === 'stats' || service === 'all') {
+      await generateStatsCard(storage, username, githubToken, theme, outputDir);
     }
 
     core.info('✅ Done!');
@@ -111,6 +123,52 @@ async function generateContributionBadge(
   await writeFile(outputPath, svg, 'utf-8');
 
   core.info(`💾 Badge saved to: ${outputPath}`);
+
+  return outputPath;
+}
+
+/**
+ * Generates the GitHub Stats Card
+ */
+async function generateStatsCard(
+  storage: FileStorage,
+  username: string,
+  token: string,
+  themeName: string,
+  outputDir: string,
+): Promise<string> {
+  core.info('📊 Fetching GitHub stats...');
+
+  if (!username) {
+    throw new Error('GitHub username is required');
+  }
+
+  if (!token) {
+    throw new Error('GitHub token is required');
+  }
+
+  // Fetch GitHub stats
+  const stats = await fetchGitHubStats(username, token);
+
+  core.info(`📈 Total Commits: ${stats.totalCommits}`);
+  core.info(`🔀 Pull Requests: ${stats.totalPRs}`);
+  core.info(`📋 Issues: ${stats.totalIssues}`);
+  core.info(`⭐ Stars: ${stats.totalStars}`);
+  core.info(`🏆 Rank: ${stats.rank}`);
+
+  // Save data
+  await storage.write('stats-data', stats);
+
+  // Generate SVG
+  const theme = getTheme(themeName);
+  const options = getDefaultStatsCardOptions(theme, username);
+  const svg = renderStatsCard(stats, options);
+
+  // Save SVG
+  const outputPath = join(outputDir, 'stats-card.svg');
+  await writeFile(outputPath, svg, 'utf-8');
+
+  core.info(`💾 Stats card saved to: ${outputPath}`);
 
   return outputPath;
 }
