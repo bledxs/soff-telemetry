@@ -36,8 +36,10 @@ jobs:
       - name: 🏗️ Build TypeScript
         run: npm run build
 
-      - name: 👁️ Update Visitor Badge
-        run: npm run update-visitor
+      - name: � Update Contribution Badge
+        run: npm run update-contribution
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 💾 Commit and push changes
         run: |

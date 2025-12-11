@@ -1,11 +1,16 @@
 import { FileStorage } from './infrastructure/kv-store.js';
 import { getTheme } from './presentation/theme.js';
 import {
-  renderVisitorBadge,
-  incrementVisitorCount,
-  getDefaultVisitorBadgeOptions,
-} from './presentation/templates/visitor-badge.js';
-import { VisitorData } from './domain/types.js';
+  renderContributionBadge,
+  getDefaultContributionBadgeOptions,
+} from './presentation/templates/contribution-badge.js';
+import {
+  fetchContributionCalendar,
+  calculateActiveDays,
+  getGitHubUsername,
+  getGitHubToken,
+} from './infrastructure/github-api.js';
+import { ContributionData } from './domain/types.js';
 import { writeFile } from 'fs/promises';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -18,15 +23,15 @@ const __dirname = dirname(__filename);
  */
 async function main() {
   const args = process.argv.slice(2);
-  const service = args.find((arg) => arg.startsWith('--service='))?.split('=')[1] || 'visitor';
+  const service = args.find((arg) => arg.startsWith('--service='))?.split('=')[1] || 'contribution';
 
   console.log(`🚀 Generating ${service} badge/stats...`);
 
   // Initialize storage
   const storage = new FileStorage();
 
-  if (service === 'visitor' || service === 'all') {
-    await generateVisitorBadge(storage);
+  if (service === 'contribution' || service === 'all') {
+    await generateContributionBadge(storage);
   }
 
   // TODO: Add other services here
@@ -38,32 +43,45 @@ async function main() {
 }
 
 /**
- * Generates the Visitor Badge
+ * Generates the Contribution Days Badge
  */
-async function generateVisitorBadge(storage: FileStorage) {
-  console.log('  📊 Updating visitor count...');
+async function generateContributionBadge(storage: FileStorage) {
+  console.log('  📊 Fetching contribution data from GitHub...');
 
-  // Read current counter
-  const currentData = await storage.read<VisitorData>('visitor-count');
+  try {
+    // Get GitHub credentials
+    const username = getGitHubUsername();
+    const token = getGitHubToken();
 
-  // Increment counter
-  const newData = incrementVisitorCount(currentData);
+    // Fetch contribution calendar
+    const calendar = await fetchContributionCalendar(username, token);
+    const totalDays = calculateActiveDays(calendar);
 
-  // Guardar nuevo contador
-  await storage.write('visitor-count', newData);
+    console.log(`  📅 Active contribution days: ${totalDays}`);
 
-  console.log(`  👁️  Visitor count: ${newData.count}`);
+    // Create contribution data
+    const contributionData: ContributionData = {
+      totalDays,
+      lastUpdated: new Date().toISOString(),
+    };
 
-  // Generate SVG
-  const theme = getTheme('dark');
-  const options = getDefaultVisitorBadgeOptions(theme);
-  const svg = renderVisitorBadge(newData, options);
+    // Save data
+    await storage.write('contribution-data', contributionData);
 
-  // Save SVG to data/
-  const outputPath = join(__dirname, '../data/visitor-badge.svg');
-  await writeFile(outputPath, svg, 'utf-8');
+    // Generate SVG
+    const theme = getTheme('dark');
+    const options = getDefaultContributionBadgeOptions(theme);
+    const svg = renderContributionBadge(contributionData, options);
 
-  console.log(`  💾 Badge saved to: data/visitor-badge.svg`);
+    // Save SVG to data/
+    const outputPath = join(__dirname, '../data/contribution-badge.svg');
+    await writeFile(outputPath, svg, 'utf-8');
+
+    console.log(`  💾 Badge saved to: data/contribution-badge.svg`);
+  } catch (error) {
+    console.error('  ❌ Error fetching contribution data:', error);
+    throw error;
+  }
 }
 
 // Run

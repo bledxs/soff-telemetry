@@ -20,15 +20,15 @@ export interface SVGOptions {
   theme: Theme;
 }
 
-// ========== Visitor Badge Types ==========
+// ========== Contribution Days Badge Types ==========
 
-export interface VisitorData {
-  count: number;
+export interface ContributionData {
+  totalDays: number;
   lastUpdated: string;
-  uniqueVisitors?: number;
+  currentStreak?: number;
 }
 
-export interface VisitorBadgeOptions extends SVGOptions {
+export interface ContributionBadgeOptions extends SVGOptions {
   label: string;
   icon?: boolean;
 }

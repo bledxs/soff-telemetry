@@ -8,7 +8,7 @@
 
 ## ✨ Features
 
-- 👁️ **Visitor Badge**: Real-time visitor counter with eye icon and gradient design
+- � **Active Days**: Total contribution days from GitHub (shows consistency)
 - 📊 **GitHub Stats**: Commits, PRs, Issues, Stars (Coming Soon)
 - 🔥 **Top Languages**: Most used programming languages (Coming Soon)
 - ⚡ **Streak Stats**: Contribution streak tracking (Coming Soon)
@@ -19,6 +19,7 @@
 - ✅ Full control over design and data
 - ✅ Repository acts as free database
 - ✅ Automated updates via GitHub Actions
+- ✅ Real data from GitHub API (not fake counters)
 
 ## 📦 Architecture
 
@@ -57,8 +58,8 @@ npm install
 ### 2. Test Locally
 
 ```bash
-# Generate visitor badge
-npm run update-visitor
+# Generate contribution badge
+npm run update-contribution
 
 # Watch mode for development
 npm run dev
@@ -70,7 +71,7 @@ npm run build
 ### 3. Use in Your Profile
 
 ```markdown
-![Visitors](https://raw.githubusercontent.com/YOUR_USERNAME/soff-telemetry/main/data/visitor-badge.svg)
+![Active Days](https://raw.githubusercontent.com/YOUR_USERNAME/soff-telemetry/main/data/contribution-badge.svg)
 ```
 
 The badge updates automatically every night via GitHub Actions!
@@ -82,7 +83,7 @@ The badge updates automatically every night via GitHub Actions!
 ```bash
 npm run dev              # Development mode with watch
 npm run build            # Compile TypeScript
-npm run update-visitor   # Generate visitor badge
+npm run update-contribution # Generate active days badge
 npm run update-stats     # Generate stats card (coming soon)
 npm run update-all       # Generate all badges
 
@@ -138,8 +139,8 @@ Auto-commits changes to `data/` folder.
 
 ```typescript
 // Domain: Pure types, no dependencies
-export interface VisitorData {
-  count: number;
+export interface ContributionData {
+  totalDays: number;
   lastUpdated: string;
 }
 
@@ -150,15 +151,16 @@ class FileStorage implements IStorage {
 }
 
 // Presentation: SVG generation
-function renderVisitorBadge(data: VisitorData): string {
+function renderContributionBadge(data: ContributionData): string {
   // Returns SVG string
 }
 ```
 
 ## 🗺️ Roadmap
 
-- [x] Visitor Badge with gradient & icon
+- [x] Contribution Days badge with gradient & fire icon
 - [x] Professional tooling (ESLint, Prettier, Husky)
+- [x] GitHub API integration for real contribution data
 - [ ] GitHub Stats Card
 - [ ] Top Languages Card
 - [ ] Streak Stats Card

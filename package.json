@@ -8,7 +8,7 @@
     "build": "tsc",
     "dev": "tsx watch src/main.ts",
     "start": "node dist/main.js",
-    "update-visitor": "tsx src/main.ts --service=visitor",
+    "update-contribution": "tsx src/main.ts --service=contribution",
     "update-stats": "tsx src/main.ts --service=stats",
     "update-all": "tsx src/main.ts --service=all",
     "lint": "eslint src/**/*.ts",

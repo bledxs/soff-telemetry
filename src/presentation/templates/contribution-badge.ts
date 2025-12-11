@@ -1,4 +1,4 @@
-import { VisitorBadgeOptions, VisitorData, Theme } from '../../domain/types.js';
+import { ContributionBadgeOptions, ContributionData, Theme } from '../../domain/types.js';
 import {
   createSVG,
   createRect,
@@ -9,10 +9,13 @@ import {
 } from '../components/svg-utils.js';
 
 /**
- * Generates the Visitor Badge SVG
- * Modern design with gradients, icons and shadows
+ * Generates the Contribution Days Badge SVG
+ * Modern design with gradients, calendar icon and shadows
  */
-export function renderVisitorBadge(data: VisitorData, options: VisitorBadgeOptions): string {
+export function renderContributionBadge(
+  data: ContributionData,
+  options: ContributionBadgeOptions,
+): string {
   const { height, theme, label, icon } = options;
 
   // Calculate dimensions
@@ -20,7 +23,7 @@ export function renderVisitorBadge(data: VisitorData, options: VisitorBadgeOptio
   const iconSize = 14;
   const iconMargin = icon ? iconSize + 6 : 0;
   const labelWidth = label.length * 7 + padding * 2 + iconMargin;
-  const countText = formatNumber(data.count);
+  const countText = formatNumber(data.totalDays);
   const countWidth = Math.max(countText.length * 10 + padding * 2, 40);
   const actualWidth = labelWidth + countWidth;
 
@@ -43,9 +46,9 @@ export function renderVisitorBadge(data: VisitorData, options: VisitorBadgeOptio
   // Counter background with gradient
   const countRect = `  <rect x="${labelWidth}" y="0" width="${countWidth}" height="${height}" rx="5" fill="url(#countGradient)" filter="url(#shadow)"/>`;
 
-  // Eye icon if enabled
-  const eyeIcon = icon
-    ? createIcon({ x: padding, y: height / 2 - iconSize / 2 }, iconSize, theme.textColor, 'eye')
+  // Calendar icon if enabled (changed from eye to calendar for active days)
+  const calendarIcon = icon
+    ? createIcon({ x: padding, y: height / 2 - iconSize / 2 }, iconSize, theme.textColor, 'fire')
     : '';
 
   // Label text
@@ -81,7 +84,7 @@ ${shadow}
 ${labelRect}
 ${countRect}
 ${shine}
-${eyeIcon}
+${calendarIcon}
 ${labelText}
 ${countValueText}`;
 
@@ -89,33 +92,14 @@ ${countValueText}`;
 }
 
 /**
- * Increments the visitor counter
- */
-export function incrementVisitorCount(currentData: VisitorData | null): VisitorData {
-  const now = new Date().toISOString();
-
-  if (!currentData) {
-    return {
-      count: 1,
-      lastUpdated: now,
-    };
-  }
-
-  return {
-    count: currentData.count + 1,
-    lastUpdated: now,
-  };
-}
-
-/**
  * Gets default options for the badge
  */
-export function getDefaultVisitorBadgeOptions(theme: Theme): VisitorBadgeOptions {
+export function getDefaultContributionBadgeOptions(theme: Theme): ContributionBadgeOptions {
   return {
     width: 150,
     height: 28,
     theme,
-    label: 'visitors',
+    label: 'active days',
     icon: true,
   };
 }
