@@ -1,0 +1,21 @@
+<svg width="167" height="28" viewBox="0 0 167 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="countGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#58a6ff"/>
+    <stop offset="100%" stop-color="#1f6feb"/>
+    </linearGradient>
+  </defs>
+  <defs>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <rect x="0" y="0" width="117" height="28" rx="5" fill="#30363d" />
+  <rect x="117" y="0" width="50" height="28" rx="5" fill="url(#countGradient)" filter="url(#shadow)"/>
+  <rect x="117" y="0" width="50" height="11.200000000000001" rx="5" fill="white" opacity="0.15"/>
+  <g transform="translate(10, 7) scale(0.5833333333333334)">
+    <path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" stroke="#c9d1d9" />
+  </g>
+  <text x="30" y="19" font-size="11" font-weight="600" fill="#c9d1d9" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" text-anchor="start">active days</text>
+  <text x="142" y="19" font-size="13" font-weight="700" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" text-anchor="middle">155</text>
+</svg>
