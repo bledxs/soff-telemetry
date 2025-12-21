@@ -8,12 +8,6 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
-  # Run on push to main (for testing)
-  push:
-    branches:
-      - main
-      - master
-
 jobs:
   update-badges:
     runs-on: ubuntu-latest
