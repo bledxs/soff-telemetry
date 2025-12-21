@@ -13,6 +13,7 @@
     "update-contribution": "tsx src/main.ts --service=contribution",
     "update-stats": "tsx src/main.ts --service=stats",
     "update-all": "tsx src/main.ts --service=all",
+    "test": "npm run typecheck && npm run lint && npm run format:check",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write \"src/**/*.{ts,js,json}\"",
