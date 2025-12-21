@@ -8,12 +8,6 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
-  # Run on push to main (for testing)
-  push:
-    branches:
-      - main
-      - master
-
 jobs:
   update-badges:
     runs-on: ubuntu-latest
@@ -24,6 +18,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate Soff Telemetry
         uses: bledxs/soff-telemetry@v1
@@ -38,4 +34,9 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add -A
-          git diff --quiet && git diff --staged --quiet || (git commit -m "🤖 Update telemetry badges [skip ci]" && git push)
+          if git diff --quiet --cached; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "🤖 Update telemetry badges [skip ci]"
+          git push
