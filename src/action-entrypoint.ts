@@ -16,9 +16,14 @@ import {
   getDefaultStatsCardOptions,
 } from './presentation/templates/stats-card.js';
 import {
+  renderLanguagesCard,
+  getDefaultLanguagesCardOptions,
+} from './presentation/templates/languages-card.js';
+import {
   fetchContributionCalendar,
   calculateActiveDays,
   fetchGitHubStats,
+  fetchTopLanguages,
 } from './infrastructure/github-api.js';
 import { ContributionData } from './domain/types.js';
 import { writeFile, mkdir } from 'fs/promises';
@@ -66,6 +71,18 @@ async function run(): Promise<void> {
 
     if (service === 'stats' || service === 'all') {
       await generateStatsCard(storage, username, githubToken, theme, outputDir);
+    }
+
+    if (service === 'languages' || service === 'all') {
+      const languagesPath = await generateLanguagesCard(
+        storage,
+        username,
+        githubToken,
+        theme,
+        outputDir,
+      );
+
+      core.setOutput('badge_path', languagesPath);
     }
 
     core.info('✅ Done!');
@@ -169,6 +186,42 @@ async function generateStatsCard(
   await writeFile(outputPath, svg, 'utf-8');
 
   core.info(`💾 Stats card saved to: ${outputPath}`);
+
+  return outputPath;
+}
+
+/**
+ * Generates the Top Languages Card
+ */
+async function generateLanguagesCard(
+  storage: FileStorage,
+  username: string,
+  token: string,
+  themeName: string,
+  outputDir: string,
+): Promise<string> {
+  core.info('🧠 Fetching top languages...');
+
+  if (!username) {
+    throw new Error('GitHub username is required');
+  }
+
+  if (!token) {
+    throw new Error('GitHub token is required');
+  }
+
+  const languagesData = await fetchTopLanguages(username, token);
+
+  await storage.write('languages-data', languagesData);
+
+  const theme = getTheme(themeName);
+  const options = getDefaultLanguagesCardOptions(theme, username);
+  const svg = renderLanguagesCard(languagesData, options);
+
+  const outputPath = join(outputDir, 'languages-card.svg');
+  await writeFile(outputPath, svg, 'utf-8');
+
+  core.info(`💾 Languages card saved to: ${outputPath}`);
 
   return outputPath;
 }

@@ -10,9 +10,14 @@ import {
   getDefaultStatsCardOptions,
 } from './presentation/templates/stats-card.js';
 import {
+  renderLanguagesCard,
+  getDefaultLanguagesCardOptions,
+} from './presentation/templates/languages-card.js';
+import {
   fetchContributionCalendar,
   calculateActiveDays,
   fetchGitHubStats,
+  fetchTopLanguages,
   getGitHubUsername,
   getGitHubToken,
 } from './infrastructure/github-api.js';
@@ -45,8 +50,10 @@ async function main() {
     await generateStatsCard(storage, username);
   }
 
-  // TODO: Add other services here
-  // if (service === 'languages' || service === 'all') { ... }
+  if (service === 'languages' || service === 'all') {
+    await generateLanguagesCard(storage, username);
+  }
+
   // if (service === 'streak' || service === 'all') { ... }
 
   console.log('✅ Done!');
@@ -133,6 +140,37 @@ async function generateStatsCard(storage: FileStorage, username?: string) {
     console.log(`  💾 Stats card saved to: data/stats-card.svg`);
   } catch (error) {
     console.error('  ❌ Error fetching stats:', error);
+    throw error;
+  }
+}
+
+/**
+ * Generates the Top Languages Card
+ */
+async function generateLanguagesCard(storage: FileStorage, username?: string) {
+  console.log('  🧠 Fetching top languages...');
+
+  try {
+    const githubUsername = getGitHubUsername(username);
+    const token = getGitHubToken();
+
+    console.log(`  👤 Using GitHub username: ${githubUsername}`);
+
+    const languagesData = await fetchTopLanguages(githubUsername, token);
+    console.log(`  🗂️ Languages found: ${languagesData.languages.length}`);
+
+    await storage.write('languages-data', languagesData);
+
+    const theme = getTheme('dark');
+    const options = getDefaultLanguagesCardOptions(theme, githubUsername);
+    const svg = renderLanguagesCard(languagesData, options);
+
+    const outputPath = join(__dirname, '../data/languages-card.svg');
+    await writeFile(outputPath, svg, 'utf-8');
+
+    console.log(`  💾 Languages card saved to: data/languages-card.svg`);
+  } catch (error) {
+    console.error('  ❌ Error fetching languages:', error);
     throw error;
   }
 }

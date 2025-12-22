@@ -27,7 +27,7 @@ inputs:
     default: './data'
 
   service:
-    description: 'Service to generate: contribution, stats, all'
+    description: 'Service to generate: contribution, stats, languages, all'
     required: false
     default: 'contribution'
 

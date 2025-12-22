@@ -1,0 +1,47 @@
+{
+  "languages": [
+    {
+      "name": "TypeScript",
+      "size": 1665326,
+      "color": "#3178c6",
+      "percentage": 87.06621801923133
+    },
+    {
+      "name": "MDX",
+      "size": 152266,
+      "color": "#fcb32c",
+      "percentage": 7.960738469774855
+    },
+    {
+      "name": "JavaScript",
+      "size": 35776,
+      "color": "#f1e05a",
+      "percentage": 1.8704331859684051
+    },
+    {
+      "name": "CSS",
+      "size": 33341,
+      "color": "#663399",
+      "percentage": 1.7431270363755758
+    },
+    {
+      "name": "HTML",
+      "size": 16612,
+      "color": "#e34c26",
+      "percentage": 0.8685050336903831
+    },
+    {
+      "name": "SCSS",
+      "size": 8219,
+      "color": "#c6538c",
+      "percentage": 0.4297040014387948
+    },
+    {
+      "name": "Shell",
+      "size": 1172,
+      "color": "#89e051",
+      "percentage": 0.061274253520655485
+    }
+  ],
+  "totalSize": 1912712
+}

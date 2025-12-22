@@ -218,3 +218,133 @@ export async function fetchGitHubStats(username: string, token: string) {
     rank,
   };
 }
+
+/**
+ * Fetches and aggregates top programming languages used across user's repositories.
+ *
+ * Notes:
+ * - Uses repository language sizes (bytes) provided by GitHub.
+ * - By default, considers non-fork, non-archived repositories owned by the user.
+ */
+export async function fetchTopLanguages(username: string, token: string) {
+  const graphqlWithAuth = graphql.defaults({
+    headers: {
+      authorization: `token ${token}`,
+    },
+  });
+
+  const query = `
+    query($username: String!, $after: String) {
+      user(login: $username) {
+        repositories(
+          first: 100
+          after: $after
+          ownerAffiliations: OWNER
+          isFork: false
+          orderBy: { direction: DESC, field: UPDATED_AT }
+        ) {
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+          nodes {
+            isArchived
+            languages(first: 20, orderBy: { field: SIZE, direction: DESC }) {
+              edges {
+                size
+                node {
+                  name
+                  color
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  type RepoNode = {
+    isArchived: boolean;
+    languages: {
+      edges: Array<{
+        size: number;
+        node: {
+          name: string;
+          color: string | null;
+        };
+      }>;
+    };
+  };
+
+  type TopLanguagesQueryResponse = {
+    user: {
+      repositories: {
+        pageInfo: { hasNextPage: boolean; endCursor: string | null };
+        nodes: RepoNode[];
+      };
+    };
+  };
+
+  const languageTotals = new Map<string, { size: number; color: string }>();
+  let totalSize = 0;
+
+  let after: string | null = null;
+  let processedRepos = 0;
+  const maxRepos = 200;
+
+  while (true) {
+    const response: TopLanguagesQueryResponse = await graphqlWithAuth<TopLanguagesQueryResponse>(
+      query,
+      { username, after },
+    );
+
+    const nodes = response.user.repositories.nodes ?? [];
+
+    for (const repo of nodes) {
+      if (processedRepos >= maxRepos) break;
+      processedRepos++;
+
+      if (repo.isArchived) continue;
+
+      for (const edge of repo.languages.edges ?? []) {
+        const name = edge.node.name;
+        const size = edge.size ?? 0;
+        if (!name || size <= 0) continue;
+
+        totalSize += size;
+
+        const existing = languageTotals.get(name);
+        if (existing) {
+          existing.size += size;
+        } else {
+          languageTotals.set(name, {
+            size,
+            color: edge.node.color ?? '#8b949e',
+          });
+        }
+      }
+    }
+
+    const pageInfo: TopLanguagesQueryResponse['user']['repositories']['pageInfo'] =
+      response.user.repositories.pageInfo;
+    if (processedRepos >= maxRepos) break;
+    if (!pageInfo.hasNextPage || !pageInfo.endCursor) break;
+
+    after = pageInfo.endCursor;
+  }
+
+  const languages = Array.from(languageTotals.entries())
+    .map(([name, data]) => ({
+      name,
+      size: data.size,
+      color: data.color,
+      percentage: totalSize > 0 ? (data.size / totalSize) * 100 : 0,
+    }))
+    .sort((a, b) => b.size - a.size);
+
+  return {
+    languages,
+    totalSize,
+  };
+}

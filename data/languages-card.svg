@@ -1,0 +1,22 @@
+<svg width="500" height="280" viewBox="0 0 500 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="cardShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  <defs>
+    <linearGradient id="languagesGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#58a6ff"/>
+    <stop offset="100%" stop-color="#1f6feb"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="500" height="280" rx="10" fill="#0d1117" />
+  <text x="20" y="40" font-size="18" font-weight="bold" fill="#c9d1d9" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" text-anchor="start">bledxs&apos;s Top Languages</text>
+  <line x1="20" y1="60" x2="480" y2="60" stroke="#30363d" stroke-width="1" opacity="0.3"/>
+  <g>  <text x="20" y="78" font-size="14" font-weight="normal" fill="#c9d1d9" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" text-anchor="start">TypeScript</text>  <text x="480" y="78" font-size="14" font-weight="bold" fill="#58a6ff" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" text-anchor="end">87.1%</text>  <rect x="30" y="84" width="370" height="6" rx="3" fill="#21262d" />  <rect x="30" y="84" width="322.14500667115595" height="6" rx="3" fill="#3178c6" /></g>
+  <g>  <text x="20" y="114" font-size="14" font-weight="normal" fill="#c9d1d9" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" text-anchor="start">MDX</text>  <text x="480" y="114" font-size="14" font-weight="bold" fill="#58a6ff" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" text-anchor="end">8.0%</text>  <rect x="30" y="120" width="370" height="6" rx="3" fill="#21262d" />  <rect x="30" y="120" width="29.45473233816696" height="6" rx="3" fill="#fcb32c" /></g>
+  <g>  <text x="20" y="150" font-size="14" font-weight="normal" fill="#c9d1d9" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" text-anchor="start">JavaScript</text>  <text x="480" y="150" font-size="14" font-weight="bold" fill="#58a6ff" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" text-anchor="end">1.9%</text>  <rect x="30" y="156" width="370" height="6" rx="3" fill="#21262d" />  <rect x="30" y="156" width="6.920602788083099" height="6" rx="3" fill="#f1e05a" /></g>
+  <g>  <text x="20" y="186" font-size="14" font-weight="normal" fill="#c9d1d9" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" text-anchor="start">CSS</text>  <text x="480" y="186" font-size="14" font-weight="bold" fill="#58a6ff" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" text-anchor="end">1.7%</text>  <rect x="30" y="192" width="370" height="6" rx="3" fill="#21262d" />  <rect x="30" y="192" width="6.44957003458963" height="6" rx="3" fill="#663399" /></g>
+  <g>  <text x="20" y="222" font-size="14" font-weight="normal" fill="#c9d1d9" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" text-anchor="start">HTML</text>  <text x="480" y="222" font-size="14" font-weight="bold" fill="#58a6ff" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" text-anchor="end">0.9%</text>  <rect x="30" y="228" width="370" height="6" rx="3" fill="#21262d" />  <rect x="30" y="228" width="3.2134686246544173" height="6" rx="3" fill="#e34c26" /></g>
+
+</svg>

@@ -51,12 +51,25 @@ Using a different theme:
 
 Generate badges in a specific directory:
 
-```yaml
+````yaml
 - uses: bledxs/soff-telemetry@v1
   with:
     github_token: ${{ secrets.GITHUB_TOKEN }}
     output_dir: './github-stats'
-```
+
+### Top Languages Card
+
+Generate the Top Languages card:
+
+```yaml
+- uses: bledxs/soff-telemetry@v1
+  with:
+    github_token: ${{ secrets.GITHUB_TOKEN }}
+    output_dir: './assets'
+    service: 'languages'
+````
+
+````
 
 ### Specific Username
 
@@ -67,7 +80,7 @@ Generate badges for a specific user (useful for organization profiles):
   with:
     github_token: ${{ secrets.GITHUB_TOKEN }}
     username: 'specific-user'
-```
+````
 
 ## Advanced Usage
 

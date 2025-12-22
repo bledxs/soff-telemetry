@@ -12,6 +12,7 @@
     "start": "node dist/main.js",
     "update-contribution": "tsx src/main.ts --service=contribution",
     "update-stats": "tsx src/main.ts --service=stats",
+    "update-languages": "tsx src/main.ts --service=languages",
     "update-all": "tsx src/main.ts --service=all",
     "test": "npm run typecheck && npm run lint && npm run format:check",
     "lint": "eslint src/**/*.ts",

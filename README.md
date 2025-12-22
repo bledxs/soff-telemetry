@@ -11,7 +11,7 @@
 
 - 📅 **Active Days**: Total contribution days from GitHub (shows consistency)
 - 📊 **GitHub Stats**: Commits, PRs, Issues, Stars, Contributed Repos & Rank ✅ **Available Now!**
-- 🔥 **Top Languages**: Most used programming languages (Coming Soon)
+- 🔥 **Top Languages**: Most used programming languages ✅ **Available Now!**
 - ⚡ **Streak Stats**: Contribution streak tracking (Coming Soon)
 - 🎨 **Lucide Icons**: Beautiful, professional icons from [Lucide](https://lucide.dev) (1000+ icons available)
 
@@ -100,13 +100,13 @@ jobs:
 
 #### Available Inputs
 
-| Input          | Description                                    | Required | Default          |
-| -------------- | ---------------------------------------------- | -------- | ---------------- |
-| `github_token` | GitHub token with read:user permissions        | Yes      | -                |
-| `username`     | GitHub username (defaults to repo owner)       | No       | Repository owner |
-| `theme`        | Badge theme (dark, light)                      | No       | `dark`           |
-| `output_dir`   | Output directory for badges                    | No       | `./data`         |
-| `service`      | Service to generate (contribution, stats, all) | No       | `contribution`   |
+| Input          | Description                                               | Required | Default          |
+| -------------- | --------------------------------------------------------- | -------- | ---------------- |
+| `github_token` | GitHub token with read:user permissions                   | Yes      | -                |
+| `username`     | GitHub username (defaults to repo owner)                  | No       | Repository owner |
+| `theme`        | Badge theme (dark, light)                                 | No       | `dark`           |
+| `output_dir`   | Output directory for badges                               | No       | `./data`         |
+| `service`      | Service to generate (contribution, stats, languages, all) | No       | `contribution`   |
 
 #### Available Outputs
 
