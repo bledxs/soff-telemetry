@@ -1,0 +1,62 @@
+name: check-passed
+
+on:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
+
+jobs:
+  report:
+    name: report check-passed
+    runs-on: ubuntu-latest
+
+    permissions:
+      statuses: write
+
+    steps:
+      - name: Publish commit status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const conclusion = run.conclusion ?? 'unknown';
+            const state = conclusion === 'success'
+              ? 'success'
+              : (conclusion === 'neutral' || conclusion === 'skipped')
+                ? 'success'
+                : 'failure';
+
+            const description = state === 'success'
+              ? 'CI completed successfully'
+              : `CI concluded with: ${conclusion}`;
+
+            const targetUrl = run.html_url;
+            const contextName = 'check-passed';
+
+            const prs = Array.isArray(run.pull_requests) ? run.pull_requests : [];
+
+            const shas = prs.length > 0
+              ? prs.map(pr => pr?.head?.sha).filter(Boolean)
+              : [run.head_sha].filter(Boolean);
+
+            if (shas.length === 0) {
+              core.setFailed('No SHA found to report status on.');
+              return;
+            }
+
+            for (const sha of shas) {
+              await github.rest.repos.createCommitStatus({
+                owner,
+                repo,
+                sha,
+                state,
+                context: contextName,
+                description,
+                target_url: targetUrl,
+              });
+            }
