@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - name: 📥 Checkout repository
@@ -42,16 +43,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 💾 Commit and push changes
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add data/*.json data/*.svg
-          if git diff --quiet --cached; then
-            echo "No changes to commit"
-            exit 0
-          fi
-          git commit -m "🤖 Update telemetry badges [skip ci]"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: 🔁 Create pull request if changed
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          add-paths: |
+            data/*.json
+            data/*.svg
+          commit-message: '🤖 Update telemetry badges [skip ci]'
+          title: '🤖 Update telemetry badges'
+          body: 'Automated update of telemetry data and SVG outputs.'
+          branch: 'bot/update-telemetry'
+          delete-branch: true

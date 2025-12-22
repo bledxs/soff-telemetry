@@ -14,12 +14,14 @@ jobs:
 
     permissions:
       contents: write # Required to commit changes
+      pull-requests: write # Required to open/update PR
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Generate Soff Telemetry
         uses: bledxs/soff-telemetry@v1
@@ -29,14 +31,12 @@ jobs:
           output_dir: './assets'
           service: 'contribution'
 
-      - name: Commit and push if changed
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add -A
-          if git diff --quiet --cached; then
-            echo "No changes to commit"
-            exit 0
-          fi
-          git commit -m "🤖 Update telemetry badges [skip ci]"
-          git push
+      - name: Create pull request if changed
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: '🤖 Update telemetry badges [skip ci]'
+          title: '🤖 Update telemetry badges'
+          body: 'Automated update of telemetry badge assets.'
+          branch: 'bot/update-telemetry-badges'
+          delete-branch: true
